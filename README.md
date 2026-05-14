@@ -2,7 +2,7 @@
 
 This macOS application allows you to quickly toggle the system SOCKS5 proxy on or off directly from the menu bar. 
 
-<img width="667" height="571" alt="изображение" src="https://github.com/user-attachments/assets/e856f075-a31e-436b-8fbd-a8207f6b662d" />
+<img width="400" height="341" alt="toggle_sreen" src="https://github.com/user-attachments/assets/39fec174-be85-4e5b-bc55-58d38ec3cad6" />
 
 
 ### Features
