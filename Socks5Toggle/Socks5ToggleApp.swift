@@ -11,27 +11,28 @@ class AppLogger {
     private init() {
         dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        
-        // Создаем файл лога, если его еще нет
-        if !FileManager.default.fileExists(atPath: logFilePath) {
-            FileManager.default.createFile(atPath: logFilePath, contents: nil, attributes: nil)
-        }
     }
 
     func log(_ message: String, level: String = "INFO") {
         let timestamp = dateFormatter.string(from: Date())
         let logMessage = "\(timestamp) - \(level) - \(message)\n"
         
-        // Дублируем в консоль Xcode для удобства разработки
+        // Дублируем в консоль Xcode / Unified Logging
         print(logMessage, terminator: "")
         
-        // Записываем в конец файла
-        if let fileHandle = FileHandle(forWritingAtPath: logFilePath) {
-            fileHandle.seekToEndOfFile()
-            if let data = logMessage.data(using: .utf8) {
-                fileHandle.write(data)
-            }
-            try? fileHandle.close()
+        guard let data = logMessage.data(using: .utf8) else { return }
+        let fileURL = URL(fileURLWithPath: logFilePath)
+        
+        do {
+            // Пытаемся дописать в существующий файл
+            let fileHandle = try FileHandle(forWritingTo: fileURL)
+            try fileHandle.seekToEnd()
+            try fileHandle.write(contentsOf: data)
+            try fileHandle.close()
+            
+        } catch {
+            // Если файла нет (удален системой или первый запуск) — создаем и пишем лог
+            FileManager.default.createFile(atPath: logFilePath, contents: data, attributes: nil)
         }
     }
 
